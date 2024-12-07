@@ -18,43 +18,47 @@ object DaySix : Day {
 
     private fun partTwo(grid: Grid, positionsVisited: Set<GridCoord>): Int {
         var count = 0
-        for (y in 0 until grid.height) {
-            for (x in 0 until grid.width) {
-                if (partTwo0(grid.copy(), GridCoord(x, y))) count++
-            }
+//        for (y in 0 until grid.height) {
+//            for (x in 0 until grid.width) {
+//                if (partTwo0(grid.copy(), GridCoord(x, y))) count++
+//            }
+//        }
+        for (coord in positionsVisited) {
+            if (partTwo0(grid.copy(), coord)) count++
         }
         return count
     }
 
     private fun partTwo0(grid: Grid, obstruct: GridCoord): Boolean {
-        var status = true
         val visited = mutableSetOf<GuardState>()
-        var position = grid.findFirstOrThrow(RoomElements.NAVIGATOR.value)
+        var position: GridCoord = grid.findFirst(RoomElements.NAVIGATOR.value)
         var direction = GridDirection.NORTH
 
         if (obstruct != position) {
-            grid[obstruct] = RoomElements.BLOCKAGE.value
+            grid[obstruct] = RoomElements.PLACED_BLOCKAGE.value
+        } else {
+            return false
         }
 
-        do {
-            val next = position.withDirection(direction)
-            if (!grid.contains(next)) {
-                visited.add(GuardState(position, direction))
-                grid[position] = RoomElements.PATH.value
-                status = false
-                break
-            }
-
+        while (true) {
             visited.add(GuardState(position, direction))
-            if (grid[next] == RoomElements.BLOCKAGE.value) {
-                direction = nextDirection(direction)
+
+            var peek = position.withDirection(direction)
+            if (visited.contains(GuardState(peek, direction))) {
+                return true
             }
 
-            grid[position] = RoomElements.PATH.value
-            position = position.withDirection(direction)
-        } while (grid.contains(position) && !visited.contains(GuardState(position, direction)))
+            if (!grid.contains(peek)) {
+                return false
+            }
 
-        return status
+            if (grid[peek] == RoomElements.BLOCKAGE.value || grid[peek] == RoomElements.PLACED_BLOCKAGE.value) {
+                direction = nextDirection(direction)
+                continue
+            }
+
+            position = position.withDirection(direction)
+        }
     }
 
     private fun partOne(grid: Grid): Set<GridCoord> {
@@ -83,7 +87,7 @@ object DaySix : Day {
         return visited
     }
 
-    fun nextDirection(direction: GridDirection): GridDirection {
+    private fun nextDirection(direction: GridDirection): GridDirection {
         return when (direction) {
             GridDirection.NORTH -> GridDirection.EAST
             GridDirection.EAST -> GridDirection.SOUTH
