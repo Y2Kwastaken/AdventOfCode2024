@@ -28,4 +28,13 @@ data class GridCoord(val x: Int, val y: Int) {
     fun withChanges(xChange: (Int) -> Int, yChange: (Int) -> Int): GridCoord {
         return GridCoord(xChange(this.x), yChange(this.y))
     }
+
+    fun withSlope(slope: GridSlope): GridCoord {
+        return GridCoord(this.x + slope.run, this.y + slope.rise)
+    }
+
+    fun slopeBetween(other: GridCoord): GridSlope {
+        return GridSlope(other.y - this.y, other.x - this.x)
+    }
+
 }

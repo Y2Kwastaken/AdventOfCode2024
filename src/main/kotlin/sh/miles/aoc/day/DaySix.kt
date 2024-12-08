@@ -1,7 +1,7 @@
 package sh.miles.aoc.day
 
 import sh.miles.aoc.utils.ResultUnion
-import sh.miles.aoc.utils.grid.Grid
+import sh.miles.aoc.utils.grid.IntGrid
 import sh.miles.aoc.utils.grid.GridCoord
 import sh.miles.aoc.utils.grid.GridDirection
 import java.nio.file.Path
@@ -16,7 +16,7 @@ object DaySix : Day {
         return ResultUnion(partOne.size, partTwo)
     }
 
-    private fun partTwo(grid: Grid, positionsVisited: Set<GridCoord>): Int {
+    private fun partTwo(grid: IntGrid, positionsVisited: Set<GridCoord>): Int {
         var count = 0
 //        for (y in 0 until grid.height) {
 //            for (x in 0 until grid.width) {
@@ -29,7 +29,7 @@ object DaySix : Day {
         return count
     }
 
-    private fun partTwo0(grid: Grid, obstruct: GridCoord): Boolean {
+    private fun partTwo0(grid: IntGrid, obstruct: GridCoord): Boolean {
         val visited = mutableSetOf<GuardState>()
         var position: GridCoord = grid.findFirst(RoomElements.NAVIGATOR.value)
         var direction = GridDirection.NORTH
@@ -61,7 +61,7 @@ object DaySix : Day {
         }
     }
 
-    private fun partOne(grid: Grid): Set<GridCoord> {
+    private fun partOne(grid: IntGrid): Set<GridCoord> {
         val visited = mutableSetOf<GridCoord>()
         var position = grid.findFirstOrThrow(RoomElements.NAVIGATOR.value)
         var direction = GridDirection.NORTH
@@ -97,7 +97,7 @@ object DaySix : Day {
         }
     }
 
-    private fun readGrid(file: Path): Grid {
+    private fun readGrid(file: Path): IntGrid {
         val lines = file.readLines()
         val height = lines.size
         val width = lines[0].length
@@ -109,7 +109,7 @@ object DaySix : Day {
             }
         }
 
-        return Grid(grid, width, height)
+        return IntGrid(grid, width, height)
     }
 
     private data class GuardState(val location: GridCoord, val direction: GridDirection)

@@ -2,7 +2,7 @@ package sh.miles.aoc.utils.grid
 
 import kotlin.jvm.Throws
 
-class Grid(private val grid: Array<IntArray>, val width: Int, val height: Int) {
+class IntGrid(private val grid: Array<IntArray>, val width: Int, val height: Int) {
 
     @Throws(IllegalStateException::class)
     operator fun get(coord: GridCoord): Int {
@@ -60,14 +60,14 @@ class Grid(private val grid: Array<IntArray>, val width: Int, val height: Int) {
         return builder.dropLast(1).toString()
     }
 
-    fun copy(): Grid {
+    fun copy(): IntGrid {
         val copy = Array(this.height) { IntArray(this.width) }
         for ((y, ints) in this.grid.withIndex()) {
             for ((x, value) in ints.withIndex()) {
                 copy[y][x] = value
             }
         }
-        return Grid(copy, this.width, this.height)
+        return IntGrid(copy, this.width, this.height)
     }
 
     override fun toString(): String {

@@ -1,5 +1,6 @@
 package sh.miles.aoc
 
+import sh.miles.aoc.day.DayEight
 import sh.miles.aoc.day.DayFive
 import sh.miles.aoc.day.DayFour
 import sh.miles.aoc.day.DayOne
@@ -9,7 +10,7 @@ import sh.miles.aoc.day.DayThree
 import sh.miles.aoc.day.DayTwo
 import kotlin.io.path.Path
 
-private const val day = 7;
+private const val day = 8;
 private val days = mapOf(
     1 to DayOne,
     2 to DayTwo,
@@ -18,6 +19,7 @@ private val days = mapOf(
     5 to DayFive,
     6 to DaySix,
     7 to DaySeven,
+    8 to DayEight,
 )
 
 fun main() {
