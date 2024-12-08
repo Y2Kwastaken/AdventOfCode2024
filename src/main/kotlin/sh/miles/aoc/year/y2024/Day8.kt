@@ -1,13 +1,14 @@
-package sh.miles.aoc.day
+package sh.miles.aoc.year.y2024
 
 import sh.miles.aoc.utils.ResultUnion
 import sh.miles.aoc.utils.grid.CharGrid
 import sh.miles.aoc.utils.grid.GridCoord
 import sh.miles.aoc.utils.grid.GridSlope
+import sh.miles.aoc.year.Day
 import java.nio.file.Path
 import kotlin.io.path.readLines
 
-object DayEight : Day {
+object Day8 : Day {
     override fun run(file: Path): ResultUnion {
         val grid = readGrid(file)
         val antennas = findAntennas(grid)
@@ -15,16 +16,15 @@ object DayEight : Day {
         val partOneGrid = grid.copy()
         var partOneCount = 0
         for (antennaList in antennas.values) {
-            partOneCount += placeAntiNodes(partOneGrid, antennaList, ::antiNodePlacer1)
+            partOneCount += placeAntiNodes(partOneGrid, antennaList, Day8::antiNodePlacer1)
         }
 
         val partTwoGrid = grid.copy()
         var partTwoCount = 0
         for (antennaList in antennas.values) {
-            partTwoCount += placeAntiNodes2(partTwoGrid, antennaList, ::antiNodePlacer2)
+            partTwoCount += placeAntiNodes2(partTwoGrid, antennaList, Day8::antiNodePlacer2)
         }
 
-        println(partTwoGrid)
         return ResultUnion(partOneCount, partTwoCount)
     }
 
@@ -45,7 +45,6 @@ object DayEight : Day {
             counted += antiNodePlacer(grid, second, first.coord.slopeBetween(second.coord))
         }
 
-        println(counted)
         return counted.size
     }
 

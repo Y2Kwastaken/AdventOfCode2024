@@ -1,11 +1,12 @@
-package sh.miles.aoc.day
+package sh.miles.aoc.year.y2024
 
 import sh.miles.aoc.utils.ResultUnion
+import sh.miles.aoc.year.Day
 import java.nio.file.Path
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.io.path.readLines
 
-object DayThree : Day {
+object Day3 : Day {
     val PART_ONE_REGEX = "mul\\([0-9]{1,3},[0-9]{1,3}\\)".toRegex()
     val PART_TWO_REGEX = "mul\\([0-9]{1,3},[0-9]{1,3}\\)|don't\\(\\)|do\\(\\)".toRegex()
     val enabled = AtomicBoolean(true)

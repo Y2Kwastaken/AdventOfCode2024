@@ -1,12 +1,13 @@
-package sh.miles.aoc.day
+package sh.miles.aoc.year.y2024
 
 import sh.miles.aoc.utils.ResultUnion
+import sh.miles.aoc.year.Day
 import java.nio.file.Path
 import kotlin.io.path.readLines
 import kotlin.math.max
 import kotlin.math.min
 
-object DayOne : Day {
+object Day1 : Day {
     override fun run(file: Path): ResultUnion {
         val countMap = mutableMapOf<Int, Int>()
         val listOne = mutableListOf<Int>()

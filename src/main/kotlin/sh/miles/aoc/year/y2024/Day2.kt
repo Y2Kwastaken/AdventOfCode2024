@@ -1,11 +1,12 @@
-package sh.miles.aoc.day
+package sh.miles.aoc.year.y2024
 
 import sh.miles.aoc.utils.ResultUnion
+import sh.miles.aoc.year.Day
 import java.nio.file.Path
 import kotlin.io.path.readLines
 import kotlin.math.absoluteValue
 
-object DayTwo : Day {
+object Day2 : Day {
     override fun run(file: Path): ResultUnion {
         val part1 = file.readLines().map { report -> report.split(" ").map { measure -> measure.toInt() } }
             .count { it.isConforming() }

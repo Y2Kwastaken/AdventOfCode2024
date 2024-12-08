@@ -1,13 +1,14 @@
-package sh.miles.aoc.day
+package sh.miles.aoc.year.y2024
 
 import sh.miles.aoc.utils.ResultUnion
 import sh.miles.aoc.utils.grid.IntGrid
 import sh.miles.aoc.utils.grid.GridCoord
 import sh.miles.aoc.utils.grid.GridDirection
+import sh.miles.aoc.year.Day
 import java.nio.file.Path
 import kotlin.io.path.readLines
 
-object DaySix : Day {
+object Day6 : Day {
     override fun run(file: Path): ResultUnion {
         val grid = readGrid(file)
         val partOne = partOne(grid.copy())
