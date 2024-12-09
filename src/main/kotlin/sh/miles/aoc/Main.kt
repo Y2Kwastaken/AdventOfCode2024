@@ -4,7 +4,7 @@ import sh.miles.aoc.year.y2023.Days2023
 import sh.miles.aoc.year.y2024.Days2024
 import kotlin.io.path.Path
 
-private const val year = 2023
+private const val year = 2024
 private val years = mapOf(
     2023 to Days2023(),
     2024 to Days2024(),
