@@ -22,6 +22,32 @@ class IntGrid(private val grid: Array<IntArray>, val width: Int, val height: Int
         grid[coord.y][coord.x] = value
     }
 
+    fun collectAround(coord: GridCoord, directions: List<GridDirection>): List<GridCoord> {
+        if (!contains(coord)) return listOf()
+        val collector = mutableListOf<GridCoord>()
+
+        for (direction in directions) {
+            val modified = coord.withDirection(direction)
+            if (!contains(modified)) continue
+            collector.add(modified)
+        }
+
+        return collector
+    }
+
+    fun findAll(value: Int): List<GridCoord> {
+        val collector = mutableListOf<GridCoord>()
+        for ((ydex, y) in grid.withIndex()) {
+            for ((xdex, xValue) in y.withIndex()) {
+                if (xValue == value) {
+                    collector.add(GridCoord(xdex, ydex))
+                }
+            }
+        }
+
+        return collector
+    }
+
     fun findFirst(value: Int): GridCoord {
         for ((ydex, y) in grid.withIndex()) {
             for ((xdex, xValue) in y.withIndex()) {
