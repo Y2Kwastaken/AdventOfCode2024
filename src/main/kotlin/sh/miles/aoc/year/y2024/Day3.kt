@@ -13,7 +13,9 @@ object Day3 : Day {
 
     override fun run(file: Path): ResultUnion {
         val partOne = file.readLines().sumOf { parsePartOne(it) }
+        val start = System.currentTimeMillis()
         val partTwo = file.readLines().sumOf { parsePartTwo(it) }
+        println("Function two took ${System.currentTimeMillis() - start}ms")
 
         return ResultUnion(partOne, partTwo)
     }
@@ -34,7 +36,6 @@ object Day3 : Day {
                     count += (stripped[0].toInt() * stripped[1].toInt())
                 }
             }
-            println(match.value)
         }
 
         return count

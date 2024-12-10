@@ -58,49 +58,90 @@ object Day9 : Day {
 
     private data class AmphipodFile(val id: Int, val space: Int)
 
+    private data class Space(val pos: Int, val size: Int)
+    private data class File(val pos: Int, val size: Int, val id: Int)
+
     private fun partTwo(line: List<Int>): Long {
-        val rawFiles = mutableListOf<SystemSpace>()
-        var id = 0
+        val fileQueue = ArrayDeque<File>()
+        val spaceQueue = ArrayDeque<Space>()
+        val result = mutableListOf<Int?>()
 
-        for ((index, digit) in line.withIndex()) {
+        var pos = 0
+        var fileId = 0
+        line.withIndex().forEach { (index, char) ->
             if (index % 2 == 0) {
-                rawFiles.add(FileSpace(id, digit))
-                id++
-            } else {
-                if (digit != 0) {
-                    rawFiles.add(SystemSpace(digit))
+                fileQueue.add(File(pos, char, fileId))
+                repeat((pos..<pos + char).count()) {
+                    result.add(fileId)
                 }
-            }
-        }
-
-        val fileSystem = FileSystem(rawFiles, mutableSetOf())
-        var lastFileIndex: Int
-        while (fileSystem.findLastUnlockedFile().also { lastFileIndex = it } != -1) {
-            val file = fileSystem[lastFileIndex]
-            val openIndex = fileSystem.findFirstOpen(file.space)
-            if (openIndex == -1) {
-                fileSystem.lock(lastFileIndex)
-                continue
-            }
-
-            if (openIndex < lastFileIndex) {
-                fileSystem.moveFile(lastFileIndex, openIndex)
-            }
-            fileSystem.lock(lastFileIndex)
-        }
-
-        println(fileSystem.toSegmentedString())
-        return fileSystem.system.asSequence().map { file ->
-            val list = mutableListOf<Int>()
-            if (file is FileSpace) {
-                repeat(file.space) { list.add(file.fileId) }
+                pos += char
+                fileId += 1
             } else {
-                repeat(file.space) { list.add(-1) }
+                spaceQueue.add(Space(pos, char))
+                result.addAll(List(char) { null })
+                pos += char
             }
+        }
 
-            list
-        }.flatten().withIndex().filter { it.value != -1 }.sumOf { (index, num) -> num.toLong() * index.toLong() }
+        fileQueue.reversed().forEach { (pos, size, fileId) ->
+            spaceQueue.withIndex().firstOrNull { (_, space) ->
+                space.pos < pos && size <= space.size
+            }?.let { (si, s) ->
+                (0..<size).forEach { index ->
+                    result[pos + index] = null
+                    result[s.pos + index] = fileId
+                }
+                spaceQueue[si] = Space(s.pos + size, s.size - size)
+            }
+        }
+
+        return result.withIndex().sumOf { (index, value) -> index.toLong() * (value ?: 0) }
     }
+
+//    private fun partTwoF(line: List<Int>): Long {
+//        val rawFiles = mutableListOf<SystemSpace>()
+//        var id = 0
+//
+//        for ((index, digit) in line.withIndex()) {
+//            if (index % 2 == 0) {
+//                rawFiles.add(FileSpace(id, digit))
+//                id++
+//            } else {
+//                if (digit != 0) {
+//                    rawFiles.add(SystemSpace(digit))
+//                }
+//            }
+//        }
+//
+//        val fileSystem = FileSystem(rawFiles, mutableSetOf())
+//        var lastFileIndex: Int
+//        while (fileSystem.findLastUnlockedFile().also { lastFileIndex = it } != -1) {
+//            val file = fileSystem[lastFileIndex]
+//            val openIndex = fileSystem.findFirstOpen(file.space)
+//            if (openIndex == -1) {
+//                fileSystem.lock(lastFileIndex)
+//                continue
+//            }
+//
+//            if (openIndex < lastFileIndex) {
+//                fileSystem.moveFile(lastFileIndex, openIndex)
+//            }
+//            fileSystem.lock(lastFileIndex)
+//        }
+//
+//        return fileSystem.system.asSequence().map { file ->
+//            val list = mutableListOf<Int>()
+//            if (file is FileSpace) {
+//                repeat(file.space) { list.add(file.fileId) }
+//            } else {
+//                repeat(file.space) { list.add(-1) }
+//            }
+//
+//            list
+//        }.flatten().withIndex().filter { it.value != -1 }.sumOf { (index, num) -> num.toLong() * index.toLong() }
+//    }
+    // to high 6265513483391
+    // is 6265268809555
 
     private class FileSystem(val system: MutableList<SystemSpace>, private val locked: MutableSet<Int>) {
 
@@ -128,7 +169,6 @@ object Day9 : Day {
                 system[from] = SystemSpace(fromFile.space)
                 system[to] = fromFile
                 system.add(to + 1, SystemSpace(spaceDifference))
-                joinWhiteSpaces()
                 return true
             } else {
                 return false
@@ -171,6 +211,45 @@ object Day9 : Day {
 
         fun isLocked(index: Int): Boolean {
             return locked.contains(index)
+        }
+
+        private fun joinWhitespaceAround(index: Int) {
+            var count = system[index].space
+
+            var minIndex = -1
+            var cursor = index - 1
+            while (cursor > 0 && system[cursor] !is FileSpace) {
+                count += system[cursor].space
+                minIndex = cursor--
+            }
+
+            cursor = index + 1
+            var maxIndex = -1
+            while (cursor < system.size && system[cursor] !is FileSpace) {
+                count += system[cursor].space
+                maxIndex = cursor++
+            }
+
+            if (maxIndex > system.size) {
+                throw IllegalArgumentException("Wtf")
+            }
+
+            if (minIndex != -1 && maxIndex != -1) {
+                system[minIndex] = SystemSpace(count)
+                for (i in minIndex + 1 until maxIndex) {
+                    system.removeAt(minIndex + 1)
+                }
+            } else if (minIndex != -1) {
+                system[minIndex] = SystemSpace(count)
+                for (i in minIndex + 1 until index) {
+                    system.removeAt(minIndex + 1)
+                }
+            } else if (maxIndex != -1) {
+                system[maxIndex] = SystemSpace(count)
+                for (i in index until maxIndex - 1) {
+                    system.removeAt(index)
+                }
+            }
         }
 
         private fun joinWhiteSpaces() {
