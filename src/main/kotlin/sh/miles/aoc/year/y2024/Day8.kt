@@ -1,16 +1,17 @@
 package sh.miles.aoc.year.y2024
 
 import sh.miles.aoc.utils.ResultUnion
-import sh.miles.aoc.utils.grid.CharGrid
+import sh.miles.aoc.utils.grid.Grid
 import sh.miles.aoc.utils.grid.GridCoord
 import sh.miles.aoc.utils.grid.GridSlope
+import sh.miles.aoc.utils.grid.charGridOf
 import sh.miles.aoc.year.Day
 import java.nio.file.Path
 import kotlin.io.path.readLines
 
 object Day8 : Day {
     override fun run(file: Path): ResultUnion {
-        val grid = readGrid(file)
+        val grid = charGridOf(file.readLines())
         val antennas = findAntennas(grid)
 
         val partOneGrid = grid.copy()
@@ -29,7 +30,7 @@ object Day8 : Day {
     }
 
     private fun placeAntiNodes2(
-        grid: CharGrid, antennas: List<Antenna>, antiNodePlacer: (CharGrid, Antenna, GridSlope) -> Set<GridCoord>
+        grid: Grid<Char>, antennas: List<Antenna>, antiNodePlacer: (Grid<Char>, Antenna, GridSlope) -> Set<GridCoord>
     ): Int {
         val combinations = mutableListOf<Set<Antenna>>()
         generateCombinations(2, antennas, sortedSetOf(), combinations)
@@ -49,7 +50,7 @@ object Day8 : Day {
     }
 
     private fun placeAntiNodes(
-        grid: CharGrid, antennas: List<Antenna>, antiNodePlacer: (CharGrid, Antenna, GridSlope) -> Int
+        grid: Grid<Char>, antennas: List<Antenna>, antiNodePlacer: (Grid<Char>, Antenna, GridSlope) -> Int
     ): Int {
         val combinations = mutableListOf<Set<Antenna>>()
         generateCombinations(2, antennas, sortedSetOf(), combinations)
@@ -67,7 +68,7 @@ object Day8 : Day {
         return count
     }
 
-    private fun antiNodePlacer1(grid: CharGrid, first: Antenna, slope: GridSlope): Int {
+    private fun antiNodePlacer1(grid: Grid<Char>, first: Antenna, slope: GridSlope): Int {
         val offset = first.coord.withSlope(slope)
         if (grid.contains(offset)) {
             if (grid[offset] != '#') {
@@ -79,7 +80,7 @@ object Day8 : Day {
         return 0
     }
 
-    private fun antiNodePlacer2(grid: CharGrid, first: Antenna, slope: GridSlope): Set<GridCoord> {
+    private fun antiNodePlacer2(grid: Grid<Char>, first: Antenna, slope: GridSlope): Set<GridCoord> {
         var offset = first.coord.withSlope(slope)
         var counted = mutableSetOf<GridCoord>()
         while (grid.contains(offset)) {
@@ -118,7 +119,7 @@ object Day8 : Day {
         }
     }
 
-    private fun findAntennas(grid: CharGrid): Map<Char, List<Antenna>> {
+    private fun findAntennas(grid: Grid<Char>): Map<Char, List<Antenna>> {
         val map = mutableMapOf<Char, MutableList<Antenna>>()
         for (y in 0 until grid.height) {
             for (x in 0 until grid.width) {
@@ -137,21 +138,6 @@ object Day8 : Day {
         }
 
         return map
-    }
-
-    private fun readGrid(file: Path): CharGrid {
-        val lines = file.readLines()
-        val height = lines.size
-        val width = lines[0].length
-        val array = Array(height) { CharArray(width) }
-
-        for ((y, line) in lines.withIndex()) {
-            for ((x, c) in line.withIndex()) {
-                array[y][x] = c
-            }
-        }
-
-        return CharGrid(array, width, height)
     }
 }
 

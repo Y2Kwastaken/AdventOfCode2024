@@ -9,4 +9,8 @@ enum class GridDirection(val yOffset: Int, val xOffset: Int) {
     SOUTH_EAST(1, 1),
     NORTH_WEST(-1, -1),
     SOUTH_WEST(1, -1);
+
+    companion object {
+        val CARDINAL_DIRECTIONS = listOf(NORTH, SOUTH, EAST, WEST)
+    }
 }

@@ -11,7 +11,7 @@ data class GridSlope(val rise: Int, val run: Int, val positive: Boolean) {
     }
 
     fun invert(): GridSlope {
-        return GridSlope(rise, rise)
+        return GridSlope(run, rise)
     }
 
 }

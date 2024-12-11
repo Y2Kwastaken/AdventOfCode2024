@@ -1,36 +1,32 @@
 package sh.miles.aoc.year.y2024
 
 import sh.miles.aoc.utils.ResultUnion
-import sh.miles.aoc.utils.grid.IntGrid
+import sh.miles.aoc.utils.grid.Grid
 import sh.miles.aoc.utils.grid.GridCoord
 import sh.miles.aoc.utils.grid.GridDirection
+import sh.miles.aoc.utils.grid.intGridOf
 import sh.miles.aoc.year.Day
 import java.nio.file.Path
 import kotlin.io.path.readLines
 
 object Day6 : Day {
     override fun run(file: Path): ResultUnion {
-        val grid = readGrid(file)
+        val grid = intGridOf(file.readLines(), { RoomElements.convert(it) })
         val partOne = partOne(grid.copy())
         val partTwo = partTwo(grid.copy(), partOne)
 
         return ResultUnion(partOne.size, partTwo)
     }
 
-    private fun partTwo(grid: IntGrid, positionsVisited: Set<GridCoord>): Int {
+    private fun partTwo(grid: Grid<Int>, positionsVisited: Set<GridCoord>): Int {
         var count = 0
-//        for (y in 0 until grid.height) {
-//            for (x in 0 until grid.width) {
-//                if (partTwo0(grid.copy(), GridCoord(x, y))) count++
-//            }
-//        }
         for (coord in positionsVisited) {
             if (partTwo0(grid.copy(), coord)) count++
         }
         return count
     }
 
-    private fun partTwo0(grid: IntGrid, obstruct: GridCoord): Boolean {
+    private fun partTwo0(grid: Grid<Int>, obstruct: GridCoord): Boolean {
         val visited = mutableSetOf<GuardState>()
         var position: GridCoord = grid.findFirst(RoomElements.NAVIGATOR.value)
         var direction = GridDirection.NORTH
@@ -62,7 +58,7 @@ object Day6 : Day {
         }
     }
 
-    private fun partOne(grid: IntGrid): Set<GridCoord> {
+    private fun partOne(grid: Grid<Int>): Set<GridCoord> {
         val visited = mutableSetOf<GridCoord>()
         var position = grid.findFirstOrThrow(RoomElements.NAVIGATOR.value)
         var direction = GridDirection.NORTH
@@ -96,21 +92,6 @@ object Day6 : Day {
             GridDirection.WEST -> GridDirection.NORTH
             else -> throw IllegalArgumentException("Can not find next direction for ${direction.name}")
         }
-    }
-
-    private fun readGrid(file: Path): IntGrid {
-        val lines = file.readLines()
-        val height = lines.size
-        val width = lines[0].length
-        val grid = Array(height) { IntArray(width) }
-
-        for ((y, line) in lines.withIndex()) {
-            for ((x, value) in line.withIndex()) {
-                grid[y][x] = RoomElements.convert(value)
-            }
-        }
-
-        return IntGrid(grid, width, height)
     }
 
     private data class GuardState(val location: GridCoord, val direction: GridDirection)
