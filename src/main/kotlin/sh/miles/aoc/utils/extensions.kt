@@ -18,6 +18,5 @@ fun Long.halve(): List<Long> {
 }
 
 fun Double.testTolerance(tolerance: Double): Boolean {
-    println("$this ${Math.round(this)} ${this - Math.round(this)}")
     return abs(this - Math.round(this)) < tolerance
 }

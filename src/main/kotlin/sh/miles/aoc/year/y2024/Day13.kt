@@ -3,26 +3,26 @@ package sh.miles.aoc.year.y2024
 import sh.miles.aoc.utils.ComplexMath
 import sh.miles.aoc.utils.ResultUnion
 import sh.miles.aoc.utils.testTolerance
+import sh.miles.aoc.utils.timeFunctionNano
 import sh.miles.aoc.year.Day
 import java.nio.file.Path
 import kotlin.io.path.readLines
 
 object Day13 : Day {
     private const val ADDITION = 10000000000000
-    private const val DOUBLE_TOLERANCE = 0.005
+    private const val DOUBLE_TOLERANCE = 0.001
 
     override fun run(file: Path): ResultUnion {
         val machines = file.readLines().filter { it.trim().isNotBlank() }.chunked(3)
-            .map { line -> ClawMachine.parse(line) { it.withAddition(10000000000000) } }
-        var count = 0L
-        for (machine in machines) {
-            count += partOne(machine)
-        }
+            .map { line -> ClawMachine.parse(line) { it } }
 
-        return ResultUnion(count)
+        return ResultUnion(
+            timeFunctionNano { machines.sumOf { goal(it) } },
+            timeFunctionNano { machines.map { it.withPrize(it.prize.withAddition(ADDITION)) }.sumOf { goal(it) } }
+        )
     }
 
-    private fun partOne(machine: ClawMachine): Long {
+    private fun goal(machine: ClawMachine): Long {
         val matrix = machine.arrayGen()
 
         ComplexMath.applyGaussJordan(matrix)
@@ -36,11 +36,6 @@ object Day13 : Day {
         if (!first.testTolerance(DOUBLE_TOLERANCE) || !second.testTolerance(DOUBLE_TOLERANCE)) {
             return 0
         }
-
-        for (matrix1 in matrix) {
-            println(matrix1.contentToString())
-        }
-        println()
 
         return (Math.round(first) * 3) + (Math.round(second) * 1)
     }
@@ -64,6 +59,10 @@ object Day13 : Day {
                 doubleArrayOf(buttons.first.x.toDouble(), buttons.second.x.toDouble(), prize.x.toDouble()),
                 doubleArrayOf(buttons.first.y.toDouble(), buttons.second.y.toDouble(), prize.y.toDouble())
             )
+        }
+
+        fun withPrize(prize: Prize): ClawMachine {
+            return ClawMachine(this.buttons, prize)
         }
 
         companion object {
