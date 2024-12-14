@@ -1,6 +1,6 @@
 package sh.miles.aoc.year.y2024
 
-import sh.miles.aoc.utils.ComplexMath
+import sh.miles.aoc.utils.math.ComplexMath
 import sh.miles.aoc.utils.ResultUnion
 import sh.miles.aoc.utils.testTolerance
 import sh.miles.aoc.utils.timeFunctionNano

@@ -1,4 +1,4 @@
-package sh.miles.aoc.utils
+package sh.miles.aoc.utils.math
 
 object ComplexMath {
 

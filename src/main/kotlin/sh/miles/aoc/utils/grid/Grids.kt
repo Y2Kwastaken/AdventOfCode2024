@@ -20,6 +20,22 @@ fun intGridOf(input: List<String>, valueConverter: (Char) -> Int): Grid<Int> {
 }
 
 fun <E> gridOf(
+    filler: E,
+    width: Int,
+    height: Int,
+    arrayBuilder: (Int, Int) -> Array<Array<E>>
+): Grid<E> {
+    val array = arrayBuilder(width, height)
+    for ((y, row) in array.withIndex()) {
+        for (x in row.indices) {
+            array[y][x] = filler
+        }
+    }
+
+    return Grid(array, width, height, arrayBuilder)
+}
+
+fun <E> gridOf(
     input: List<String>,
     valueConverter: (Char) -> E,
     arrayBuilder: (Int, Int) -> Array<Array<E>>

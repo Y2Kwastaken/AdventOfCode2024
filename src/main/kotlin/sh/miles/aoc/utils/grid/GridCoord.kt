@@ -1,9 +1,42 @@
 package sh.miles.aoc.utils.grid
 
+import sh.miles.aoc.utils.math.Vector
+
 data class GridCoord(val x: Int, val y: Int) {
 
     companion object {
         val OUT_OF_BOUNDS = GridCoord(-1, -1)
+    }
+
+    fun withVelocity(velocity: Vector): GridCoord {
+        return GridCoord(this.x + velocity.x, this.y + velocity.y)
+    }
+
+    fun withVelocityBounded(velocity: Vector, width: Int, height: Int, wrap: Boolean): GridCoord {
+        var x = this.x + velocity.x
+        var y = this.y + velocity.y
+
+        while (x >= width && wrap) {
+            x -= width
+        }
+
+        while (x < 0 && wrap) {
+            x += width
+        }
+
+        while (y >= height && wrap) {
+            y -= height
+        }
+
+        while (y < 0 && wrap) {
+            y += height
+        }
+
+        if (x > width || x < 0 || y > height || y < 0) {
+            return GridCoord(this.x, this.y)
+        }
+
+        return GridCoord(x, y)
     }
 
     fun withDirection(direction: GridDirection): GridCoord {
