@@ -1,5 +1,6 @@
 package sh.miles.aoc.utils
 
+import kotlin.math.abs
 import kotlin.math.log10
 import kotlin.math.pow
 
@@ -14,4 +15,9 @@ fun Long.halve(digits: Int): List<Long> {
 
 fun Long.halve(): List<Long> {
     return halve(digits())
+}
+
+fun Double.testTolerance(tolerance: Double): Boolean {
+    println("$this ${Math.round(this)} ${this - Math.round(this)}")
+    return abs(this - Math.round(this)) < tolerance
 }

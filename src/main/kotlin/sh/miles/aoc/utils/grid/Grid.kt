@@ -1,7 +1,5 @@
 package sh.miles.aoc.utils.grid
 
-import kotlin.jvm.Throws
-
 class Grid<E>(
     private val grid: Array<Array<E>>,
     val width: Int,
@@ -74,6 +72,44 @@ class Grid<E>(
         return collector
     }
 
+    fun collectAll(
+        coord: GridCoord,
+        directions: List<GridDirection>,
+        doCollect: (E, E) -> Boolean,
+        collector: MutableCollection<GridCoord>,
+    ) {
+        collector.add(coord)
+        val coordValue = grid[coord.y][coord.x]
+
+        for (direction in directions) {
+            val modified = coord.withDirection(direction)
+            if (contains(modified) && doCollect(coordValue, grid[modified.y][modified.x]) && !collector.contains(
+                    modified
+                )
+            ) {
+                collectAll(modified, directions, doCollect, collector)
+            }
+        }
+    }
+
+    fun countForeignFaces(coord: GridCoord, includeOutOfBounds: Boolean): Int {
+        if (!contains(coord)) return -1
+
+        var count = 0
+        for (direction in GridDirection.CARDINAL_DIRECTIONS) {
+            val modified = coord.withDirection(direction)
+            if (!contains(modified).also { if (!it && includeOutOfBounds) count++ }) {
+                continue
+            }
+
+            if (grid[coord.y][coord.x] != grid[modified.y][modified.x]) {
+                count++
+            }
+        }
+
+        return count
+    }
+
     fun asString(converter: Map<E, String>): String {
         val builder = StringBuilder()
 
@@ -89,6 +125,20 @@ class Grid<E>(
 
     override fun toString(): String {
         return asString(mapOf())
+    }
+
+    fun copy(low: GridCoord, high: GridCoord): Grid<E> {
+        val width = (high.x + 1 - low.x)
+        val height = (high.y + 1 - low.y)
+
+        val copy = this.arrayBuilder(this.width, this.height)
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                copy[y][x] = grid[low.y + y][low.x + x]
+            }
+        }
+
+        return Grid(copy, width, height, this.arrayBuilder)
     }
 
     fun copy(): Grid<E> {
