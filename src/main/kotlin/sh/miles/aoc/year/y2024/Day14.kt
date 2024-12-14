@@ -6,6 +6,7 @@ import sh.miles.aoc.utils.grid.GridCoord
 import sh.miles.aoc.utils.grid.INT_ARRAY_BUILDER
 import sh.miles.aoc.utils.grid.gridOf
 import sh.miles.aoc.utils.math.Vector
+import sh.miles.aoc.utils.timeFunction
 import sh.miles.aoc.year.Day
 import java.nio.file.Path
 import kotlin.io.path.readLines
@@ -19,12 +20,35 @@ object Day14 : Day {
             }.zipWithNext().map { (first, second) -> Pair(first, Vector(second.x, second.y)) }
         }.flatten()
 
+        return ResultUnion(timeFunction { partOne(robots) }, timeFunction { partTwo(robots) })
+    }
+
+    private fun partOne(robots: List<Pair<GridCoord, Vector>>): Int {
         val grid = gridOf(0, 101, 103, INT_ARRAY_BUILDER)
         robots.map { it.first.withVelocityBounded(it.second.times(100, 100), grid.width, grid.height, true) }.forEach {
             grid[it] = grid[it] + 1
         }
 
-        return ResultUnion(quadrantCounter(grid))
+        return quadrantCounter(grid)
+    }
+
+    private data class Robot(var coord: GridCoord, val vector: Vector)
+
+    private fun partTwo(robots: List<Pair<GridCoord, Vector>>): Int {
+        val robots = robots.map { Robot(it.first, it.second) }
+        var steps = 0
+
+        while (robots.distinctBy { it.coord }.size != robots.size) {
+            steps++
+
+            for (robot in robots) {
+                val (coord, velocity) = robot
+
+                robot.coord = coord.withVelocityBounded(velocity, 101, 103, true)
+            }
+        }
+
+        return steps
     }
 
     private fun quadrantCounter(grid: Grid<Int>): Int {
