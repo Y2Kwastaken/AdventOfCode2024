@@ -1,11 +1,25 @@
 package sh.miles.aoc.utils.grid
 
 import sh.miles.aoc.utils.math.Vector
+import kotlin.math.max
+import kotlin.math.min
 
 data class GridCoord(val x: Int, val y: Int) {
 
     companion object {
         val OUT_OF_BOUNDS = GridCoord(-1, -1)
+
+        fun max(first: GridCoord, second: GridCoord): GridCoord {
+            return GridCoord(max(first.x, second.x), max(first.y, second.y))
+        }
+
+        fun min(first: GridCoord, second: GridCoord): GridCoord {
+            return GridCoord(min(first.x, second.x), min(first.y, second.y))
+        }
+    }
+
+    fun asVector(): Vector {
+        return Vector(this.x, this.y)
     }
 
     fun withVelocity(velocity: Vector): GridCoord {

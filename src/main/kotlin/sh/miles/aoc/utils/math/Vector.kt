@@ -35,4 +35,12 @@ data class Vector(val x: Int, val y: Int) {
         if (x == 0 || y == 0) throw IllegalArgumentException("Vector parameters must be non zero instead got Vector($x,$y)")
         return Vector(this.x / x, this.y / y)
     }
+
+    fun inverse(): Vector {
+        return Vector(this.y, this.x)
+    }
+
+    fun reverse(): Vector {
+        return Vector(-this.x, -this.y)
+    }
 }

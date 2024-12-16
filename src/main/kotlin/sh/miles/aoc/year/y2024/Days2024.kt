@@ -3,7 +3,7 @@ package sh.miles.aoc.year.y2024
 import sh.miles.aoc.year.Year
 
 class Days2024 : Year {
-    override val currentDay = 14
+    override val currentDay = 15
     override val days = mapOf(
         1 to Day1,
         2 to Day2,
@@ -19,5 +19,6 @@ class Days2024 : Year {
         12 to Day12,
         13 to Day13,
         14 to Day14,
+        15 to Day15,
     )
 }

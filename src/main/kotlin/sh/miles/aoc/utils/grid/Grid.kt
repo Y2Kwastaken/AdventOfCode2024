@@ -1,5 +1,8 @@
 package sh.miles.aoc.utils.grid
 
+import sh.miles.aoc.utils.math.Vector
+import sh.miles.aoc.utils.operate
+
 class Grid<E>(
     private val grid: Array<Array<E>>,
     val width: Int,
@@ -89,6 +92,27 @@ class Grid<E>(
             ) {
                 collectAll(modified, directions, doCollect, collector)
             }
+        }
+    }
+
+    fun shift(first: GridCoord, second: GridCoord, shift: Vector, fillEmptyWith: E) {
+        if (!contains(first) || !contains(second)) {
+            throw IllegalArgumentException("$first and $second must be inside the grid of width $width and height $height")
+        }
+
+        val capture: MutableList<Pair<GridCoord, E>> = mutableListOf()
+
+        var step = first
+        while(step != second) {
+            capture.add(Pair(GridCoord(step.x, step.y), grid[step.y][step.x]))
+            step = step.withVelocity(shift)
+        }
+
+        capture.map { Triple(it.first.withVelocity(shift), it.first, it.second) }.operate { (coord, initial, value) ->
+            if (!contains(coord)) throw IllegalArgumentException("Out of bounds while shifting coordinate $initial[$value] to $coord with a shift vector of $shift")
+            grid[initial.y][initial.x] = fillEmptyWith
+        }.forEach { (coord, _, value) ->
+            grid[coord.y][coord.x] = value
         }
     }
 
