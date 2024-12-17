@@ -28,6 +28,15 @@ class Grid<E>(
         grid[coord.y][coord.x] = value
     }
 
+    fun findAll(values: List<E>): List<GridCoord> {
+        val collector = mutableListOf<GridCoord>()
+        for (value in values) {
+            collector.addAll(findAll(value))
+        }
+
+        return collector
+    }
+
     fun findAll(value: E): List<GridCoord> {
         val collector = mutableListOf<GridCoord>()
         for ((y, line) in grid.withIndex()) {
